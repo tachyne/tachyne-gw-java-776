@@ -1,0 +1,38 @@
+# Headless service governing the StatefulSet (stable per-pod DNS:
+# tachyne-gw-java-776-0.tachyne-gw-java-776-hl.tachyne.svc).
+apiVersion: v1
+kind: Service
+metadata:
+  name: tachyne-gw-java-776-hl
+  namespace: tachyne
+  labels:
+    app.kubernetes.io/name: tachyne
+    app.kubernetes.io/component: gw-java-776
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: tachyne
+    app.kubernetes.io/component: gw-java-776
+  ports:
+    - name: minecraft
+      port: 25565
+---
+# Client-facing service — cluster-internal: clients enter via tachyne-dispatch
+# on the official port; nothing bypasses the gateways.
+apiVersion: v1
+kind: Service
+metadata:
+  name: tachyne-gw-java-776
+  namespace: tachyne
+  labels:
+    app.kubernetes.io/name: tachyne
+    app.kubernetes.io/component: gw-java-776
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: tachyne
+    app.kubernetes.io/component: gw-java-776
+  ports:
+    - name: minecraft
+      port: 25565
+      targetPort: minecraft
