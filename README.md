@@ -26,8 +26,9 @@ for what to expect (implemented / partial / missing) as a player.
 Gateway for Java protocol **776 (Minecraft "26.2")**: terminates real clients,
 authorizes logins via **tachyne-access** (fail closed, 30 s cache), attaches
 each session to a **tachyne-world** pod over the domain attach protocol, and
-renders the typed event stream into wire format. Structurally it is gw-770's
-session code **plus a translation boundary**: every clientbound packet is
+renders the typed event stream into wire format. It runs the **same shared session
+pipeline** as gw-java-770 (`tachyne-common/gwsession`) with a translation
+boundary on top: every clientbound packet is
 composed as canonical 770 via `tachyne-common/render770`, then rewritten by
 `protocol.TranslatorFor(776)` (the chained 770→…→776 translation from
 tachyne-common) at the client edge; serverbound packets are back-translated
@@ -45,14 +46,16 @@ is cluster-internal.
 ## Layout
 
 ```
-cmd/gw/            entrypoint (env-first config, SIGTERM shutdown)
-internal/gw/       gateway: status | login(access) → configuration(26.x) →
-                   play (attach session pump ⇄ render770 + TranslatorFor(776))
-internal/access/   thin wrapper over tachyne-common/access
-internal/wire/     minimal pre-play framing helpers (handshake/status)
+cmd/gw/            THE WHOLE BINARY: version pinning (776 / "26.2") + env wiring
+cmd/mcping/        operational probe: a status ping against any gateway
 deploy/            k8s manifests (StatefulSet + cluster-internal service)
-.forgejo/workflows CI: docker build (vet+test inside) + registry push
+.github/workflows  CI: gofmt/vet/test, then build + push to ghcr.io
 ```
+
+The gateway itself — front door, login, configuration and the play pipeline —
+lives in **`tachyne-common/gwsession`**, shared with gw-java-770. This repo
+pins the protocol and wires the environment; fix any gateway bug in
+tachyne-common, once, and both gateways get it.
 
 ## Configuration (env)
 
@@ -63,7 +66,9 @@ deploy/            k8s manifests (StatefulSet + cluster-internal service)
 | `TACHYNE_ATTACH_TOKEN` | attach shared secret (secret `tachyne-attach-token`)|
 | `TACHYNE_ACCESS_URL` / `TACHYNE_ACCESS_TOKEN` | tachyne-access (unset = checks off, dev only) |
 | `TACHYNE_MOTD`         | server-list description                             |
-| `POD_NAME`             | downward API; trailing ordinal = SID                |
+| `POD_NAME`             | downward API; trailing ordinal = SID                 |
+| `TACHYNE_WORLD_PATTERN`| shard-aware backend template (`tachyne-world-%d.…:25500`) |
+| `TACHYNE_VIEW_CAP`     | max view radius in chunks (default 12)               |
 
 ## Build / test / deploy
 
@@ -72,11 +77,10 @@ go build ./... && go test ./...
 go run ./cmd/gw
 ```
 
-CI builds + tags the image on
-push to main; `kubectl rollout restart` on the StatefulSet. When a tachyne-common change is involved,
-pin the new sha in go.mod and deploy the world pod first. CI module fetches
-occasionally time out ("dial <registry>:443 i/o timeout") — an empty-commit
-retry works.
+GitHub Actions runs gofmt/vet/test on every push and PR, then builds and
+pushes `ghcr.io/tachyne/tachyne-gw-java-776:{latest,<short-sha>}`; deploy with
+`kubectl rollout restart` on the StatefulSet. When a tachyne-common change is
+involved, pin the new sha in go.mod and deploy the world pod first.
 
 ## Design notes
 
