@@ -23,7 +23,7 @@ for what to expect (implemented / partial / missing) as a player.
 
 
 
-Gateway for Java protocol **776 (Minecraft "26.2")**: terminates real clients,
+Gateway for Java protocols **776-777 (Minecraft "26.2" and "26.3")**: terminates real clients,
 authorizes logins via **tachyne-access** (fail closed, 30 s cache), attaches
 each session to a **tachyne-world** pod over the domain attach protocol, and
 renders the typed event stream into wire format. It runs the **same shared session
@@ -46,7 +46,7 @@ is cluster-internal.
 ## Layout
 
 ```
-cmd/gw/            THE WHOLE BINARY: version pinning (776 / "26.2") + env wiring
+cmd/gw/            THE WHOLE BINARY: version range (776-777 / "26.2-26.3") + env wiring
 cmd/mcping/        operational probe: a status ping against any gateway
 deploy/            k8s manifests (StatefulSet + cluster-internal service)
 .github/workflows  CI: gofmt/vet/test, then build + push to ghcr.io

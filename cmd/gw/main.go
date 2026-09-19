@@ -1,4 +1,4 @@
-// Command gw runs the tachyne Java gateway pinned to protocol 776 ("26.2").
+// Command gw runs the tachyne Java gateway for protocols 776-777 (26.2 and 26.3).
 // The entire gateway — front door and session pipeline — lives in
 // tachyne-common/gwsession; this binary is only the version pinning +
 // environment wiring.
@@ -26,11 +26,14 @@ import (
 	"github.com/tachyne/tachyne-common/gwsession"
 )
 
-// Protocol pinning for this gateway build: exactly one client version; the
-// translation chain rewrites canonical 770 to it at the client edge.
+// Protocol range for this gateway build: 26.2 (776) and 26.3 (777); the
+// translation chain rewrites canonical 770 to each client's version at the
+// client edge (26.3 is its own step: new packets, renumbered ids, changed
+// layouts).
 const (
-	Protocol    = 776    // Minecraft Java network protocol this gateway serves
-	VersionName = "26.2" // human-readable release name for that protocol
+	Protocol    = 776         // the lowest protocol this gateway serves (its name)
+	MaxProtocol = 777         // 26.3
+	VersionName = "26.2-26.3" // human-readable release names for that range
 )
 
 func main() {
@@ -47,7 +50,7 @@ func main() {
 		VersionName:  VersionName,
 		Proto:        Protocol,
 		MinProto:     Protocol,
-		MaxProto:     Protocol,
+		MaxProto:     MaxProtocol,
 		ViewCap:      envInt("TACHYNE_VIEW_CAP"), // honored render-distance ceiling; 0 = pipeline default (12)
 	}
 	if url := os.Getenv("TACHYNE_ACCESS_URL"); url != "" {
