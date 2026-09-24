@@ -28,3 +28,5 @@ github.com/tachyne/tachyne-common v0.1.1-0.20260924103517-1d66b3512d27 h1:FKDS1Z
 github.com/tachyne/tachyne-common v0.1.1-0.20260924103517-1d66b3512d27/go.mod h1:0fDSCW2H9ZkF560RmWM3DFEPmW0PCdlvWdmxVVaINXU=
 github.com/tachyne/tachyne-common v0.1.1-0.20260924133351-df26078af99c h1:XJPuzmy52Aqa3iPy2BBXtv1RAQbNGeN66FP7tcsjiLY=
 github.com/tachyne/tachyne-common v0.1.1-0.20260924133351-df26078af99c/go.mod h1:0fDSCW2H9ZkF560RmWM3DFEPmW0PCdlvWdmxVVaINXU=
+github.com/tachyne/tachyne-common v0.1.1-0.20260924141349-20d3d7f5ecce h1:pQDP6uiQyv9dRacI+w8JOdIesRd2fe5WTkl+sV+v4A8=
+github.com/tachyne/tachyne-common v0.1.1-0.20260924141349-20d3d7f5ecce/go.mod h1:0fDSCW2H9ZkF560RmWM3DFEPmW0PCdlvWdmxVVaINXU=

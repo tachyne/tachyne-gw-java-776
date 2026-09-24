@@ -10,6 +10,10 @@
 //	TACHYNE_MOTD     server-list description            (default derived from version)
 //	POD_NAME         StatefulSet pod name; the trailing ordinal becomes the
 //	                 gateway's SID for inter-server comms (default 0)
+//	TACHYNE_ONLINE_MODE  "on" = online mode: players authenticate with Mojang's
+//	                 session service and join as their real account UUID
+//	                 (default off = offline mode, name-derived UUIDs)
+//	TACHYNE_SESSION_SERVER  session service base URL (default Mojang's)
 package main
 
 import (
@@ -58,6 +62,17 @@ func main() {
 		log.Printf("access control via %s (fail closed)", url)
 	} else {
 		log.Print("WARNING: TACHYNE_ACCESS_URL unset — running OPEN (no access control)")
+	}
+
+	if os.Getenv("TACHYNE_ONLINE_MODE") == "on" {
+		auth, err := gwsession.NewAuthenticator(os.Getenv("TACHYNE_SESSION_SERVER"))
+		if err != nil {
+			log.Fatalf("online mode: %v", err)
+		}
+		s.Auth = auth
+		log.Printf("online mode: players authenticate with %s", auth.SessionServer)
+	} else {
+		log.Print("offline mode: player UUIDs are derived from their names, unauthenticated")
 	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)

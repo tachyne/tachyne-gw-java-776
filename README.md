@@ -69,6 +69,8 @@ tachyne-common, once, and both gateways get it.
 | `POD_NAME`             | downward API; trailing ordinal = SID                 |
 | `TACHYNE_WORLD_PATTERN`| shard-aware backend template (`tachyne-world-%d.…:25500`) |
 | `TACHYNE_VIEW_CAP`     | max view radius in chunks (default 12)               |
+| `TACHYNE_ONLINE_MODE`  | `on` = players sign in with their Mojang account and join as its real UUID, with skins (default off: offline mode) |
+| `TACHYNE_SESSION_SERVER` | session service base URL (default Mojang's)       |
 
 ## Build / test / deploy
 
