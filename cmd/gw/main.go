@@ -14,6 +14,10 @@
 //	                 session service and join as their real account UUID
 //	                 (default off = offline mode, name-derived UUIDs)
 //	TACHYNE_SESSION_SERVER  session service base URL (default Mojang's)
+//	TACHYNE_RESOURCE_PACK            server resource pack URL (server.properties
+//	                 resource-pack; "" = none), with TACHYNE_RESOURCE_PACK_SHA1,
+//	                 TACHYNE_REQUIRE_RESOURCE_PACK ("true") and
+//	                 TACHYNE_RESOURCE_PACK_PROMPT
 package main
 
 import (
@@ -56,6 +60,8 @@ func main() {
 		MinProto:     Protocol,
 		MaxProto:     MaxProtocol,
 		ViewCap:      envInt("TACHYNE_VIEW_CAP"), // honored render-distance ceiling; 0 = pipeline default (12)
+		ResourcePack: gwsession.NewResourcePack(os.Getenv("TACHYNE_RESOURCE_PACK"), os.Getenv("TACHYNE_RESOURCE_PACK_SHA1"),
+			os.Getenv("TACHYNE_REQUIRE_RESOURCE_PACK") == "true", os.Getenv("TACHYNE_RESOURCE_PACK_PROMPT")),
 	}
 	if url := os.Getenv("TACHYNE_ACCESS_URL"); url != "" {
 		s.Access = access.New(url, os.Getenv("TACHYNE_ACCESS_TOKEN"), 30*time.Second)
