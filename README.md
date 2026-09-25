@@ -71,6 +71,8 @@ tachyne-common, once, and both gateways get it.
 | `TACHYNE_VIEW_CAP`     | max view radius in chunks (default 12)               |
 | `TACHYNE_ONLINE_MODE`  | `on` = players sign in with their Mojang account and join as its real UUID, with skins (default off: offline mode) |
 | `TACHYNE_SESSION_SERVER` | session service base URL (default Mojang's)       |
+| `TACHYNE_RESOURCE_PACK` | server resource pack URL, offered while joining (unset = none) |
+| `TACHYNE_RESOURCE_PACK_SHA1` / `TACHYNE_REQUIRE_RESOURCE_PACK` / `TACHYNE_RESOURCE_PACK_PROMPT` | the pack's hash, `true` to disconnect players who decline it, and the text on the accept screen — as server.properties' `resource-pack-sha1`, `require-resource-pack`, `resource-pack-prompt` |
 
 ## Build / test / deploy
 
