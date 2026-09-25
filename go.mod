@@ -2,4 +2,4 @@ module github.com/tachyne/tachyne-gw-java-776
 
 go 1.26
 
-require github.com/tachyne/tachyne-common v0.1.1-0.20260925140924-8953e13dc521
+require github.com/tachyne/tachyne-common v0.1.1-0.20260925141704-e56d14b17f89
